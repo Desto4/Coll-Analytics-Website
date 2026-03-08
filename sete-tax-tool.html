@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SETE Tax Strategists | Client Value Estimator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --ink: #101820;
+      --brand: #0f5132;
+      --brand-soft: #dff3df;
+      --warn: #ab2f2f;
+      --card: #fffaf2;
+      --line: #d6cfc1;
+      --accent: #f0bb62;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(240, 187, 98, 0.22), transparent 30%),
+        radial-gradient(circle at 85% 80%, rgba(15, 81, 50, 0.18), transparent 35%),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Space Grotesk", sans-serif;
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 2rem 1.1rem 2.5rem;
+    }
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .brand {
+      margin: 0;
+      font-size: clamp(1.45rem, 2.3vw, 2.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+    .sub {
+      margin: 0.4rem 0 0;
+      color: #33494a;
+      font-size: 0.95rem;
+      max-width: 58ch;
+    }
+    .chip {
+      background: var(--brand-soft);
+      border: 1px solid #9fcca0;
+      color: #134229;
+      padding: 0.46rem 0.72rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-family: "IBM Plex Mono", monospace;
+      display: inline-block;
+    }
+    .layout {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 980px) {
+      .layout {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1rem;
+      box-shadow: 0 8px 28px rgba(8, 16, 12, 0.08);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    @media (min-width: 680px) {
+      .row {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 0.35rem;
+      color: #364344;
+      font-family: "IBM Plex Mono", monospace;
+    }
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      border: 1px solid #b9b0a1;
+      border-radius: 10px;
+      padding: 0.65rem 0.72rem;
+      font-size: 0.95rem;
+      background: #fff;
+      color: var(--ink);
+    }
+    .muted {
+      color: #57696a;
+      font-size: 0.84rem;
+      margin: 0.35rem 0 0.2rem;
+      font-family: "IBM Plex Mono", monospace;
+    }
+    .line-items {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .item {
+      display: grid;
+      grid-template-columns: minmax(120px, 1fr) 180px auto;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .item button {
+      border: 1px solid #ccb9a5;
+      background: #fff6ec;
+      border-radius: 8px;
+      color: #7b2d1c;
+      cursor: pointer;
+      padding: 0.52rem 0.7rem;
+      font-size: 0.8rem;
+    }
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
+    }
+    button.action,
+    .file-btn {
+      border: 1px solid #264a33;
+      background: var(--brand);
+      color: #eef7ee;
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: "IBM Plex Mono", monospace;
+    }
+    .file-btn {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-btn input {
+      position: absolute;
+      opacity: 0;
+      inset: 0;
+      cursor: pointer;
+    }
+    button.alt {
+      border: 1px solid #967f68;
+      background: #f7ebd9;
+      color: #3a2a16;
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: "IBM Plex Mono", monospace;
+    }
+    .stats {
+      display: grid;
+      gap: 0.6rem;
+    }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.78rem;
+      background: #fffdf9;
+    }
+    .stat h3 {
+      margin: 0;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-family: "IBM Plex Mono", monospace;
+      color: #46595b;
+    }
+    .value {
+      margin-top: 0.22rem;
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    .value.good {
+      color: var(--brand);
+    }
+    .value.bad {
+      color: var(--warn);
+    }
+    .bars {
+      display: grid;
+      gap: 0.62rem;
+      margin-top: 0.8rem;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: 136px 1fr 84px;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-family: "IBM Plex Mono", monospace;
+      color: #3a4d4d;
+    }
+    .bar {
+      background: #ece5d8;
+      border-radius: 999px;
+      overflow: hidden;
+      height: 14px;
+      border: 1px solid #dacfbf;
+    }
+    .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f0bb62, #0f5132);
+      transition: width 0.35s ease;
+    }
+    .summary {
+      border-top: 1px dashed #c8bda9;
+      margin-top: 0.9rem;
+      padding-top: 0.9rem;
+      font-size: 0.9rem;
+      color: #2f4143;
+      line-height: 1.45;
+    }
+    .footer-note {
+      margin-top: 0.9rem;
+      font-size: 0.77rem;
+      color: #596d6e;
+      font-family: "IBM Plex Mono", monospace;
+    }
+    .report-meta {
+      margin-top: 0.9rem;
+      font-size: 0.78rem;
+      color: #4e6466;
+      font-family: "IBM Plex Mono", monospace;
+      border-top: 1px solid #d6cab5;
+      padding-top: 0.6rem;
+    }
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.6rem;
+      font-size: 0.84rem;
+    }
+    .report-table th,
+    .report-table td {
+      border-bottom: 1px solid #ddcfba;
+      padding: 0.5rem 0.4rem;
+      text-align: left;
+    }
+    .report-table th:last-child,
+    .report-table td:last-child {
+      text-align: right;
+    }
+    .print-only {
+      display: none;
+    }
+    @media print {
+      @page {
+        size: letter;
+        margin: 0.5in;
+      }
+      body {
+        background: #fff;
+      }
+      .wrap {
+        max-width: 100%;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .panel {
+        box-shadow: none;
+        border-color: #bdbdbd;
+        break-inside: avoid;
+      }
+      .value {
+        color: #111 !important;
+      }
+    }
+    @media (max-width: 660px) {
+      .item {
+        grid-template-columns: 1fr;
+      }
+      .bar-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top no-print">
+      <div>
+        <h1 class="brand">SETE Tax Strategists<br>Client Value Estimator</h1>
+        <p class="sub">Show projected tax savings, post-strategy liability, and net client value in one live screen.</p>
+      </div>
+      <span class="chip">Tax Planning Presentation Tool</span>
+    </div>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="row">
+          <div>
+            <label for="clientName">Client Name</label>
+            <input id="clientName" type="text" value="Sample Client LLC">
+          </div>
+          <div>
+            <label for="startingLiability">Starting Tax Liability ($)</label>
+            <input id="startingLiability" type="number" min="0" step="100" value="110000">
+          </div>
+          <div>
+            <label for="serviceFee">SETE Service Fee ($)</label>
+            <input id="serviceFee" type="number" min="0" step="100" value="12000">
+          </div>
+        </div>
+
+        <p class="muted">Strategy line items (enter savings as positive values):</p>
+        <div id="lineItems" class="line-items"></div>
+        <div class="tools">
+          <button id="addItem" class="alt" type="button">Add Strategy Line</button>
+          <label class="file-btn">Import CSV
+            <input id="csvInput" type="file" accept=".csv,text/csv">
+          </label>
+          <button id="resetSample" class="alt" type="button">Load Sample Data</button>
+          <button id="downloadPdf" class="action" type="button">Download One-Pager PDF</button>
+        </div>
+        <p class="footer-note">CSV format expected: columns `Metric,Amount` like your sample report.</p>
+      </section>
+
+      <section class="panel">
+        <div class="stats">
+          <div class="stat">
+            <h3>Total Projected Tax Savings</h3>
+            <div id="totalSavings" class="value good">$0</div>
+          </div>
+          <div class="stat">
+            <h3>Projected Net Tax Liability</h3>
+            <div id="netLiability" class="value">$0</div>
+          </div>
+          <div class="stat">
+            <h3>Tax Liability Reduction</h3>
+            <div id="reductionPct" class="value good">0.00%</div>
+          </div>
+          <div class="stat">
+            <h3>Client Net Benefit (After Fee)</h3>
+            <div id="netBenefit" class="value good">$0</div>
+          </div>
+          <div class="stat">
+            <h3>Return On SETE Fee</h3>
+            <div id="roi" class="value">0.00x</div>
+          </div>
+        </div>
+
+        <div class="bars">
+          <div class="bar-row">
+            <span>Starting Liability</span>
+            <div class="bar"><div id="startBar" class="fill"></div></div>
+            <strong id="startLabel">$0</strong>
+          </div>
+          <div class="bar-row">
+            <span>Net Liability</span>
+            <div class="bar"><div id="netBar" class="fill"></div></div>
+            <strong id="netLabel">$0</strong>
+          </div>
+        </div>
+
+        <div id="summary" class="summary"></div>
+        <div class="report-meta">
+          <div id="reportClient">Client: Sample Client LLC</div>
+          <div id="reportDate">Prepared: --</div>
+        </div>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>Projected Savings</th>
+            </tr>
+          </thead>
+          <tbody id="reportTableBody"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <section class="print-only panel" style="margin-top: 0.8rem;">
+      <h2 style="margin:0 0 0.55rem; font-size:1.1rem;">SETE Tax Strategists | Tax Savings Projection</h2>
+      <p id="printSummary" style="margin:0; line-height:1.45; color:#253536;"></p>
+      <p style="margin:0.55rem 0 0; font-size:0.76rem; color:#52686b; font-family:'IBM Plex Mono', monospace;">
+        This report is a planning estimate based on provided inputs and is not tax filing advice.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const sampleRows = [
+      { name: "Payroll Tax Savings", amount: 32000 },
+      { name: "Real Estate and Cost Segregation Study", amount: 20000 },
+      { name: "Retirement Planning", amount: 5000 },
+      { name: "Missed Deductions and Credits", amount: 10000 }
+    ];
+
+    const lineItemsEl = document.getElementById("lineItems");
+    const startingEl = document.getElementById("startingLiability");
+    const serviceFeeEl = document.getElementById("serviceFee");
+    const clientEl = document.getElementById("clientName");
+    const csvInputEl = document.getElementById("csvInput");
+    const reportTableBodyEl = document.getElementById("reportTableBody");
+
+    const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    const percent = new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function sanitizeAmount(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n) || n < 0) return 0;
+      return n;
+    }
+
+    function addLineItem(name = "", amount = 0) {
+      const row = document.createElement("div");
+      row.className = "item";
+      row.innerHTML = `
+        <input type="text" placeholder="Strategy name" value="${name.replace(/"/g, "&quot;")}">
+        <input type="number" min="0" step="100" value="${sanitizeAmount(amount)}">
+        <button type="button">Remove</button>
+      `;
+      const [nameInput, amountInput, removeButton] = row.children;
+      nameInput.addEventListener("input", recalc);
+      amountInput.addEventListener("input", recalc);
+      removeButton.addEventListener("click", () => {
+        row.remove();
+        recalc();
+      });
+      lineItemsEl.appendChild(row);
+    }
+
+    function loadSampleData() {
+      lineItemsEl.innerHTML = "";
+      sampleRows.forEach((item) => addLineItem(item.name, item.amount));
+      recalc();
+    }
+
+    function readLineItems() {
+      return [...lineItemsEl.querySelectorAll(".item")].map((item) => {
+        const inputs = item.querySelectorAll("input");
+        return {
+          name: inputs[0].value.trim() || "Unlabeled Strategy",
+          amount: sanitizeAmount(inputs[1].value)
+        };
+      });
+    }
+
+    function recalc() {
+      const start = sanitizeAmount(startingEl.value);
+      const fee = sanitizeAmount(serviceFeeEl.value);
+      const items = readLineItems();
+      const totalSavings = items.reduce((sum, item) => sum + item.amount, 0);
+      const netLiability = Math.max(start - totalSavings, 0);
+      const reduction = start > 0 ? (totalSavings / start) * 100 : 0;
+      const netBenefit = totalSavings - fee;
+      const roi = fee > 0 ? totalSavings / fee : 0;
+
+      document.getElementById("totalSavings").textContent = currency.format(totalSavings);
+      document.getElementById("netLiability").textContent = currency.format(netLiability);
+      document.getElementById("reductionPct").textContent = `${percent.format(reduction)}%`;
+      const netBenefitEl = document.getElementById("netBenefit");
+      netBenefitEl.textContent = currency.format(netBenefit);
+      netBenefitEl.className = `value ${netBenefit >= 0 ? "good" : "bad"}`;
+      document.getElementById("roi").textContent = `${percent.format(roi)}x`;
+
+      const maxForBars = Math.max(start, netLiability, 1);
+      document.getElementById("startBar").style.width = `${(start / maxForBars) * 100}%`;
+      document.getElementById("netBar").style.width = `${(netLiability / maxForBars) * 100}%`;
+      document.getElementById("startLabel").textContent = currency.format(start);
+      document.getElementById("netLabel").textContent = currency.format(netLiability);
+
+      const top3 = items.slice().sort((a, b) => b.amount - a.amount).slice(0, 3);
+      const top3Text = top3.map((x) => `${x.name} (${currency.format(x.amount)})`).join(", ");
+      const name = clientEl.value.trim() || "this client";
+      const narrative =
+        `${name} is projected to reduce tax liability by ${percent.format(reduction)}% (${currency.format(totalSavings)} in savings). ` +
+        `After a ${currency.format(fee)} SETE fee, the net projected client benefit is ${currency.format(netBenefit)}. ` +
+        (top3Text ? `Largest projected drivers: ${top3Text}.` : "");
+      document.getElementById("summary").textContent = narrative;
+      document.getElementById("printSummary").textContent = narrative;
+      document.getElementById("reportClient").textContent = `Client: ${name}`;
+      document.getElementById("reportDate").textContent = `Prepared: ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`;
+
+      reportTableBodyEl.innerHTML = "";
+      items.forEach((item) => {
+        const tr = document.createElement("tr");
+        const nameTd = document.createElement("td");
+        nameTd.textContent = item.name;
+        const amountTd = document.createElement("td");
+        amountTd.textContent = currency.format(item.amount);
+        tr.appendChild(nameTd);
+        tr.appendChild(amountTd);
+        reportTableBodyEl.appendChild(tr);
+      });
+      if (items.length === 0) {
+        const tr = document.createElement("tr");
+        const nameTd = document.createElement("td");
+        nameTd.textContent = "None entered";
+        const amountTd = document.createElement("td");
+        amountTd.textContent = "$0";
+        tr.appendChild(nameTd);
+        tr.appendChild(amountTd);
+        reportTableBodyEl.appendChild(tr);
+      }
+    }
+
+    function parseAmount(raw) {
+      const cleaned = String(raw || "").replace(/[$,%\s"]/g, "").replace(/,/g, "");
+      const n = Number(cleaned);
+      if (!Number.isFinite(n)) return 0;
+      return Math.abs(n);
+    }
+
+    function importCsv(text) {
+      const lines = text.split(/\r?\n/).filter((line) => line.trim().length > 0);
+      if (lines.length < 2) return;
+      const rows = [];
+      for (let i = 1; i < lines.length; i += 1) {
+        const parts = lines[i].split(",");
+        if (parts.length < 2) continue;
+        const metric = parts[0].trim();
+        const amount = parseAmount(parts.slice(1).join(","));
+        rows.push({ metric, amount });
+      }
+
+      const start = rows.find((r) => r.metric.toLowerCase() === "starting tax liability");
+      if (start) {
+        startingEl.value = start.amount;
+      }
+
+      const strategyRows = rows.filter((r) => {
+        const m = r.metric.toLowerCase();
+        return ![
+          "starting tax liability",
+          "total projected tax savings",
+          "projected net tax liability",
+          "tax liability reduction %",
+          "metric"
+        ].includes(m) && r.amount > 0;
+      });
+
+      lineItemsEl.innerHTML = "";
+      strategyRows.forEach((r) => addLineItem(r.metric, r.amount));
+      if (strategyRows.length === 0) {
+        addLineItem("Tax Strategy Savings", 0);
+      }
+      recalc();
+    }
+
+    document.getElementById("addItem").addEventListener("click", () => {
+      addLineItem("", 0);
+      recalc();
+    });
+    document.getElementById("resetSample").addEventListener("click", loadSampleData);
+    document.getElementById("downloadPdf").addEventListener("click", () => {
+      recalc();
+      window.print();
+    });
+    [startingEl, serviceFeeEl, clientEl].forEach((el) => el.addEventListener("input", recalc));
+
+    csvInputEl.addEventListener("change", (event) => {
+      const [file] = event.target.files || [];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => importCsv(String(reader.result || ""));
+      reader.readAsText(file);
+      event.target.value = "";
+    });
+
+    loadSampleData();
+  </script>
+</body>
+</html>
